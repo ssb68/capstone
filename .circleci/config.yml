@@ -20,7 +20,9 @@ jobs:
           command: |
             sudo apt-get update
             sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-            sudo systemctl start docker
+            service --status-all
+            sudo service docker start
+            #sudo systemctl start docker
             docker --version
       - run:
           name: install dependencies

@@ -4,7 +4,7 @@ jobs:
   init:
     docker:
       # Use the same Docker base as the project
-      - image: circleci/python:3.10-buster-node-browsers-legacy
+      - image: cimg/python:3.7.12
     working_directory: ~/repo
     steps:
       - checkout
@@ -39,14 +39,17 @@ jobs:
       - run: 
           name: run docker build
           command: |
+            sudo apt-get update
+            sudo apt-get remove docker docker-engine docker.io containerd runc
+            sudo apt-get install docker-ce docker-ce-cli containerd.io
             docker --version
             docker images ls
             . capstone/bin/activate
-            TAG=0.1.$CIRCLE_BUILD_NUM
-            docker build -t capstone:$TAG .
-            docker tag capstone $DOCKER_USER/capstone:$TAG
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-            docker push $DOCKER_USER/capstone:$TAG
+            #TAG=0.1.$CIRCLE_BUILD_NUM
+            #docker build -t capstone:$TAG .
+            #docker tag capstone $DOCKER_USER/capstone:$TAG
+            #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            #docker push $DOCKER_USER/capstone:$TAG
 
 
 

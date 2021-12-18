@@ -42,4 +42,14 @@ hadolint:
 	# This is linter for Dockerfiles
 	hadolint Dockerfile
 
+build-image:
+	# Build image and add a descriptive tag
+	docker build -t capstone:blue .
+	docker images
+	
+push-image:
+	# push image to ECR
+	
+
+
 all: install lint test

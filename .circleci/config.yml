@@ -38,3 +38,9 @@ jobs:
           command: |
             . capstone/bin/activate
             make hadolint
+      # Build the docker image
+      - run:
+          name: run docker build
+          command: |
+            . capstone/bin/activate
+            make build-image

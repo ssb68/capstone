@@ -16,6 +16,11 @@ jobs:
       #    # fallback to using the latest cache if no exact match is found
       #    - v1-dependencies-
       - run:
+          name: start docker
+          command: |
+            sudo systemctl start docker
+            docker --version
+      - run:
           name: install dependencies
           command: |
             python3 -m venv capstone

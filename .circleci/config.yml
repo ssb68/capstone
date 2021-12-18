@@ -38,20 +38,50 @@ jobs:
           command: |
             . capstone/bin/activate
             make hadolint
-
-      # Install via apk on alpine based images
-      - run:
-          name: Install Docker client
-          command: |
-            apt update
-            apt install -y curl
-            curl -fsSL https://get.docker.com -o get-docker.sh
-            sh get-docker.sh
-            docker--version                      
-
-      # Build the docker image
+  
+  buildImage:
+    docker:
+      - image: circleci/golang:1.15
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS  # context / project UI env-var reference      
+    working_directory: ~/repo
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "requirements.txt" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_caching: true
+ 
+      # build and push Docker image
       - run:
           name: run docker build
           command: |
-            . capstone/bin/activate
-            make build-image
+            docker--version                      
+            TAG=0.1.$CIRCLE_BUILD_NUM
+            docker build -t capstone:$TAG .
+            docker tag capstone $DOCKER_USER/capstone:$TAG
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            docker push $DOCKER_USER/capstone:$TAG
+
+workflows:
+  default:
+    jobs:
+      - build
+      - buildImage:
+          requires: [build] 
+      
+
+
+      # Build the docker image
+      #- run:
+      #    name: run docker build
+      #    command: |
+      #      . capstone/bin/activate
+      #      make build-image

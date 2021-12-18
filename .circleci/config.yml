@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 jobs:
   build:
@@ -38,7 +38,6 @@ jobs:
           command: |
             . capstone/bin/activate
             make hadolint
-  
   buildImage:
     docker:
       - image: circleci/golang:1.15
@@ -75,13 +74,4 @@ workflows:
     jobs:
       - build
       - buildImage:
-          requires: [build] 
-      
-
-
-      # Build the docker image
-      #- run:
-      #    name: run docker build
-      #    command: |
-      #      . capstone/bin/activate
-      #      make build-image
+          requires: [build]

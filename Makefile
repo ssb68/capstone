@@ -27,6 +27,7 @@ install-local:
 	sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
 	sudo chmod +x /bin/hadolint
 
+
 test:
 	# Additional, optional, tests could go here
 	#python -m pytest -vv --cov=myrepolib tests/*.py
@@ -46,7 +47,7 @@ build-image:
 	# Build image and add a descriptive tag
 	docker build -t capstone:blue .
 	docker images
-	
+
 push-image:
 	# push image to ECR
 	

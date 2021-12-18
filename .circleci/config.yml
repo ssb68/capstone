@@ -1,11 +1,11 @@
 version: 2.1
 
 jobs:
-  build:
+  init:
     docker:
       # Use the same Docker base as the project
-      #- image: python:3.7.3-stretch
-      - image: cimg/python:3.10.1
+      - image: python:3.7.3-stretch
+      #- image: cimg/python:3.10.1
     working_directory: ~/repo
     steps:
       - checkout
@@ -15,15 +15,6 @@ jobs:
       #    - v1-dependencies-{{ checksum "requirements.txt" }}
       #    # fallback to using the latest cache if no exact match is found
       #    - v1-dependencies-
-      - run:
-          name: start docker
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-            service --status-all
-            sudo service docker start
-            #sudo systemctl start docker
-            docker --version
       - run:
           name: install dependencies
           command: |
@@ -49,22 +40,32 @@ jobs:
           command: |
             . capstone/bin/activate
             #make hadolint
- 
-      # build and push Docker image
-      - run:
-          name: run docker build
+  build:
+    machine: true
+    steps:
+      - checkout
+      - run: 
+          name: whoknows
           command: |
-            . capstone/bin/activate
-            docker --version                      
-            TAG=0.1.$CIRCLE_BUILD_NUM
-            docker build -t capstone:$TAG .
-            docker tag capstone $DOCKER_USER/capstone:$TAG
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-            docker push $DOCKER_USER/capstone:$TAG
+            docker --version
+            docker images ls
+            #docker build -t melisa87/udacity:capstone  .
+      
+      # build and push Docker image
+      #- run:
+      #    name: run docker build
+      #    command: |
+      #      . capstone/bin/activate
+      #      docker --version                      
+      #      TAG=0.1.$CIRCLE_BUILD_NUM
+      #      docker build -t capstone:$TAG .
+      #      docker tag capstone $DOCKER_USER/capstone:$TAG
+      #      echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+      #      docker push $DOCKER_USER/capstone:$TAG
 
 workflows:
   default:
     jobs:
-      - build
-      #- buildImage:
-      #    requires: [build]
+      - init
+      - build:
+          requires: [init]

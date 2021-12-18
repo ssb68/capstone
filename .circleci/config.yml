@@ -1,7 +1,17 @@
 version: 2.1
 
+orbs:
+  docker: circleci/docker@x.y.z
+
 jobs:
+
   init:
+    executor:
+      name: docker/docker
+      tag: '3.6'
+    steps:
+      - checkout
+      - docker/install-docker-tools
     docker:
       # Use the same Docker base as the project
       - image: cimg/python:3.7.12
@@ -39,19 +49,6 @@ jobs:
       - run: 
           name: run docker build
           command: |
-            sudo apt-get update
-            sudo apt-get remove docker docker-engine docker.io containerd runc
-            sudo apt-get install docker-ce docker-ce-cli containerd.io
-            sudo systemctl start docker
-            sudo systemctl enable docker
-            sudo systemctl restart docker
-            sudo ps aux | grep docker
-            
-            #sudo service docker status
-            #sudo service --status-all 
-            #sudo service docker start
-            #sudo service docker start
-            
             docker --version
             docker images
             #. capstone/bin/activate

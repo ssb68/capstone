@@ -13,7 +13,7 @@ print("Running with version: %s" % hello_version)
 @app.route('/hello/')
 @app.route('/hello/<name>')
 def hello(name=None):
-    return render_template(str(literal_eval('hello_version')), name=name)
+    return render_template(hello_version, name=name)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80, debug=True)

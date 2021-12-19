@@ -1,22 +1,38 @@
 version: 2.1
 
-#orbs:
-#  docker: circleci/docker@2.0.1
+orbs:
+  docker: circleci/docker@2.0.1
+
+parameters:
+  docker-password:
+    default: DOCKER_PASSWORD
+    description: |
+      Name of environment variable storing your Docker password
+    type: env_var_name
+  docker-username:
+    default: DOCKER_LOGIN
+    description: |
+      Name of environment variable storing your Docker username
+    type: env_var_name
+  registry:
+    default: docker.io
+    description: 'Name of registry to use, defaults to docker.io'
+    type: string
+  use-docker-credentials-store:
+    default: true
+    description: >
+      Configure Docker to use a credentials store. This option is only supported
+      on Ubuntu/Debian/macOS platforms.
+    type: boolean
 
 jobs:
   init:
     docker:
       # Use the same Docker base as the project
       - image: python:3.7.3-stretch
-        auth:
-          username: $DOCKER_USER
-          password: $DOCKERHUB_PASS  # context / project UI env-var reference    
     working_directory: ~/repo
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 19.03.13
-          docker_layer_caching: true
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -45,11 +61,11 @@ jobs:
           command: |
             . capstone/bin/activate
             #make hadolint
-      - run: 
-          name: run docker build
-          command: |
-            docker --version
-            docker images
+      #- run: 
+      #    name: run docker build
+      #    command: |
+      #      docker --version
+      #      docker images
       #      #. capstone/bin/activate
       #      #TAG=0.1.$CIRCLE_BUILD_NUM
       #      #docker build -t capstone:$TAG .
@@ -62,11 +78,10 @@ workflows:
     jobs:
       - init
       #https://circleci.com/developer/orbs/orb/circleci/docker#usage-build-and-update
-      #- docker/publish:
-      #    deploy: false
-      #    #image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME          
-      #    use-docker-credentials-store: true
-      #    tag: 0.1.$CIRCLE_BUILD_NUM
-      #    image: brayssa/capstone          
-      #    requires: [init]
-
+      - docker/publish:
+          deploy: false
+          #image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME          
+          use-docker-credentials-store: true
+          tag: 0.1.$CIRCLE_BUILD_NUM
+          image: brayssa/capstone          
+          requires: [init]

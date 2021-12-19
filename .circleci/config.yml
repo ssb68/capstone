@@ -73,9 +73,10 @@ jobs:
       - when:
           condition: <<parameters.create>>
           steps:
-            - run: echo "building eks cluster"
-              name: Install the eksctl tool
+            - run: 
+                name: Install the eksctl tool
                 command: |
+                  echo "building eks cluster"
                   if which eksctl > /dev/null; then
                     echo "eksctl is already installed"
                     eksctl version

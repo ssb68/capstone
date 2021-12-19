@@ -45,24 +45,17 @@ jobs:
           command: |
             . capstone/bin/activate
             #make hadolint
-      #- run:
-      #    name: Install Docker client
-      #    command: |
-      #      apt-get update && apt-get upgrade -y
-      #      #cd /etc/ssl
-      #      #chmod o+rx certs  
-      #      apt-get install docker-ce-cli
       - run: 
           name: run docker build
           command: |
             docker --version
             docker images
-      #      #. capstone/bin/activate
-      #      #TAG=0.1.$CIRCLE_BUILD_NUM
-      #      #docker build -t capstone:$TAG .
-      #     #docker tag capstone $DOCKER_USER/capstone:$TAG
-      #      #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-      #      #docker push $DOCKER_USER/capstone:$TAG
+            . capstone/bin/activate
+            TAG=0.1.$CIRCLE_BUILD_NUM
+            docker build -t capstone .
+            docker tag capstone $DOCKER_USER/capstone:$TAG
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            docker push $DOCKER_USER/capstone:$TAG
 
 workflows:
   default:

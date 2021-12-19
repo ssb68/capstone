@@ -63,6 +63,7 @@ jobs:
   
   createEKScluster: 
     description: create AWS EKS stack using eksctl
+    executor: aws-eks/python3
     parameters:
       create:
         description: boolean to determine whether this is the initial cluster build

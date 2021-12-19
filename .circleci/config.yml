@@ -83,7 +83,6 @@ jobs:
                   if which eksctl > /dev/null; then
                     echo "eksctl is already installed"
                     eksctl version
-                    exit 0
                   else
                     echo "eksctl needs to be installed"
                     mkdir -p eksctl_download
@@ -98,6 +97,19 @@ jobs:
                     rmdir eksctl_download
                     eksctl version                     
                   fi
+            - run: 
+                name: Create cluster with eksctl tool
+                command: |
+                  eksctl create cluster \
+                  --name steve-capstone-test \
+                  --region us-east-1
+                  --version 1.16 \
+                  --nodegroup-name standard-workers \
+                  --node-type t2.micro \
+                  --nodes 2 \
+                  --nodes-min 1 \
+                  --nodes-max 3 \
+                  --node-ami auto                  
       - unless:
           condition: <<parameters.create>>
           steps:

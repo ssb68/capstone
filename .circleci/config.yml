@@ -1,8 +1,8 @@
 version: 2.1
 
-orbs:
-  aws-eks: circleci/aws-eks@2.0
-  kubernetes: circleci/kubernetes@1.0
+#orbs:
+#  aws-eks: circleci/aws-eks@2.0
+#  kubernetes: circleci/kubernetes@1.0
 
 jobs:
   build:
@@ -63,13 +63,15 @@ jobs:
   
   createEKScluster: 
     description: create AWS EKS stack using eksctl
-    executor: aws-eks/python3
+    #executor: aws-eks/python3
+    docker:
+      - image: cimg/python:3.10.1
     parameters:
       create:
         description: boolean to determine whether this is the initial cluster build
         default: false
         type: boolean
-    machine: true
+    #machine: true
     steps:
       - when:
           condition: <<parameters.create>>
@@ -82,17 +84,19 @@ jobs:
                     echo "eksctl is already installed"
                     eksctl version
                     exit 0
-                  fi
-                  mkdir -p eksctl_download
-                  curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" \
+                  else
+                    mkdir -p eksctl_download
+                    curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" \
                     | tar xz -C eksctl_download
-                  chmod +x eksctl_download/eksctl
-                  SUDO=""
-                  if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
-                    SUDO="sudo"
+                    chmod +x eksctl_download/eksctl
+                    SUDO=""
+                    if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
+                      SUDO="sudo"
+                    fi
+                    $SUDO mv eksctl_download/eksctl /usr/local/bin/
+                    rmdir eksctl_download
+                    eksctl version                     
                   fi
-                  $SUDO mv eksctl_download/eksctl /usr/local/bin/
-                  rmdir eksctl_download
       - unless:
           condition: <<parameters.create>>
           steps:

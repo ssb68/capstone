@@ -47,7 +47,11 @@ jobs:
             #make hadolint
       - run:
           name: Install Docker client
-          command: apt-get install docker-ce-cli
+          command: |
+            apt-get update
+            cd /etc/ssl
+            chmod o+rx certs  
+            apt-get install docker-ce-cli
       - run: 
           name: run docker build
           command: |

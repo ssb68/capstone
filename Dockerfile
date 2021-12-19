@@ -7,7 +7,7 @@ WORKDIR /app
 ## Step 2:
 # Copy source code to working directory
 COPY . app.py /app/
-COPY . templates/hello-v1.html /app/templates/ 
+COPY . templates/*.html /app/templates/ 
 
 ## Step 3:
 # Install packages from requirements.txt
@@ -18,6 +18,8 @@ RUN pip install --upgrade pip &&\
 ## Step 4:
 # Expose port 80 
 EXPOSE 80
+
+ENV HELLO_VERSION=hello-v2.html
 
 ## Step 5:
 # Run app.py at container launch

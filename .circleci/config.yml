@@ -1,28 +1,26 @@
 version: 2.1
 
-#orbs:
-#  docker: circleci/docker@2.0.1
-
 jobs:
-  init:
+  build:
     docker:
-      # Use the same Docker base as the project
+      # https://circleci.com/developer/images/image/cimg/python#image-name
       - image: cimg/python:3.10.1
         auth:
           username: $DOCKER_USER
-          password: $DOCKERHUB_PASS  # context / project UI env-var reference    
+          password: $DOCKER_PASS
     working_directory: ~/repo
     steps:
       - checkout
+      # https://circleci.com/docs/2.0/building-docker-images/ 
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: true
       # Download and cache dependencies
-      #- restore_cache:
-      #    keys:
-      #    - v1-dependencies-{{ checksum "requirements.txt" }}
-      #    # fallback to using the latest cache if no exact match is found
-      #    - v1-dependencies-
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "requirements.txt" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -33,40 +31,37 @@ jobs:
           paths:
             - ./capstone
           key: v1-dependencies-{{ checksum "requirements.txt" }}
-      # run lint!
+      # run lint
       - run:
           name: run python lint
           command: |
             . capstone/bin/activate
             make lint 
-      # run hadolint!
+      # run hadolint
       - run:
           name: run hado lint
           command: |
             . capstone/bin/activate
-            #make hadolint
+            make hadolint
+      # build local image
       - run: 
           name: run docker build
           command: |
-            docker --version
-            docker images
+            . capstone/bin/activate
+            make build-image PROJECT=$CAPSTONE_PROJECT
+            #docker --version
+            #docker build -t $CAPSTONE_PROJECT .
+      # push image to my docker.io repo
+      - run: 
+          name: run docker push
+          command: |
             . capstone/bin/activate
             TAG=0.1.$CIRCLE_BUILD_NUM
-            docker build -t capstone .
-            docker tag capstone $DOCKER_USER/capstone:$TAG
+            docker tag $CAPSTONE_PROJECT $DOCKER_USER/$CAPSTONE_PROJECT:$TAG
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-            docker push $DOCKER_USER/capstone:$TAG
+            docker push $DOCKER_USER/$CAPSTONE_PROJECT:$TAG
 
 workflows:
   default:
     jobs:
-      - init
-      #https://circleci.com/developer/orbs/orb/circleci/docker#usage-build-and-update
-      #- docker/publish:
-      #    deploy: false
-      #    #image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME          
-      #    use-docker-credentials-store: true
-      #    tag: 0.1.$CIRCLE_BUILD_NUM
-      #    image: brayssa/capstone          
-      #    requires: [init]
-
+      - build 

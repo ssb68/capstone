@@ -20,14 +20,6 @@ install:
 	sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
 	sudo chmod +x /bin/hadolint
 
-install-local:
-	# This should be run from inside a virtualenv
-	pip3 install --upgrade pip && \
-	pip3 install -r requirements.txt
-	sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
-	sudo chmod +x /bin/hadolint
-
-
 test:
 	# Additional, optional, tests could go here
 	#python -m pytest -vv --cov=myrepolib tests/*.py
@@ -45,12 +37,11 @@ hadolint:
 
 build-image:
 	# Build image and add a descriptive tag
-	docker build -t capstone:blue .
+	docker build -t PROJECT .
 	docker images
 
 push-image:
 	# push image to ECR
 	
-
 
 all: install lint test

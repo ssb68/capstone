@@ -7,7 +7,7 @@ jobs:
   init:
     docker:
       # Use the same Docker base as the project
-      - image: python:3.7.3-stretch
+      - image: cimg/python:3.10.1
         auth:
           username: $DOCKER_USER
           password: $DOCKERHUB_PASS  # context / project UI env-var reference    
@@ -18,11 +18,11 @@ jobs:
           version: 19.03.13
           docker_layer_caching: true
       # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "requirements.txt" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+      #- restore_cache:
+      #    keys:
+      #    - v1-dependencies-{{ checksum "requirements.txt" }}
+      #    # fallback to using the latest cache if no exact match is found
+      #    - v1-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -45,13 +45,13 @@ jobs:
           command: |
             . capstone/bin/activate
             #make hadolint
-      - run:
-          name: Install Docker client
-          command: |
-            apt-get update && apt-get upgrade -y
-            #cd /etc/ssl
-            #chmod o+rx certs  
-            apt-get install docker-ce-cli
+      #- run:
+      #    name: Install Docker client
+      #    command: |
+      #      apt-get update && apt-get upgrade -y
+      #      #cd /etc/ssl
+      #      #chmod o+rx certs  
+      #      apt-get install docker-ce-cli
       - run: 
           name: run docker build
           command: |

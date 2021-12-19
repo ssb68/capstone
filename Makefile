@@ -37,8 +37,8 @@ hadolint:
 
 build-image:
 	# Build image and add a descriptive tag
-	docker build -t PROJECT .
-	docker images
+	docker build -t ${PROJECT} .
+	docker images ls
 
 push-image:
 	# push image to ECR

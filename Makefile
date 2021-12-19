@@ -38,10 +38,13 @@ hadolint:
 build-image:
 	# Build image and add a descriptive tag
 	docker build -t ${PROJECT} .
-	docker images ls
+	docker images
 
 push-image:
-	# push image to ECR
-	
+	# push image to docker.io
+    docker tag ${PROJECT} ${USER}/${PROJECT}:${IMAGE_TAG}
+    echo ${PASS} | docker login -u ${USER} --password-stdin
+    docker push ${USER}/${PROJECT}:${IMAGE_TAG}
+
 
 all: install lint test

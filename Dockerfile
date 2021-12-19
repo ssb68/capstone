@@ -19,8 +19,10 @@ RUN pip install --upgrade pip &&\
 # Expose port 80 
 EXPOSE 80
 
-ENV HELLO_VERSION=hello-v2.html
-
 ## Step 5:
+# just change this value for to v2 for testing rolling updates
+ENV HELLO_VERSION=hello-v1.html
+
+## Step 6:
 # Run app.py at container launch
 CMD ["python", "app.py"]

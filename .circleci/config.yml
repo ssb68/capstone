@@ -49,19 +49,35 @@ jobs:
           command: |
             . capstone/bin/activate
             make build-image PROJECT=$CAPSTONE_PROJECT
-            #docker --version
-            #docker build -t $CAPSTONE_PROJECT .
       # push image to my docker.io repo
       - run: 
           name: run docker push
           command: |
             . capstone/bin/activate
             TAG=0.1.$CIRCLE_BUILD_NUM
-            docker tag $CAPSTONE_PROJECT $DOCKER_USER/$CAPSTONE_PROJECT:$TAG
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-            docker push $DOCKER_USER/$CAPSTONE_PROJECT:$TAG
-
+            make push-image PROJECT=$CAPSTONE_PROJECT IMAGE_TAG=$TAG USER=$DOCKER_USER PASS=$DOCKER_PASS
+  
+  createEKScluster: 
+    description: create AWS EKS stack using eksctl
+    parameters:
+      skip:
+        description: boolean to determine whether this is the initial cluster build
+        default: true
+        type: boolean
+    machine: true
+    steps:
+      - when:
+          condition: <<parameters.skip>>
+          steps:
+            - run: echo "build eks cluster"
+      - unless:
+          condition: <<parameters.skip>>
+          steps:
+            - run: echo "DO NOT build eks cluster"
+   
 workflows:
   default:
     jobs:
-      - build 
+      #- build 
+      - createEKScluster: 
+          skip: true

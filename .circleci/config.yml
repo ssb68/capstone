@@ -48,9 +48,9 @@ jobs:
       - run:
           name: Install Docker client
           command: |
-            apt-get update
-            cd /etc/ssl
-            chmod o+rx certs  
+            apt-get update && apt-get upgrade -y
+            #cd /etc/ssl
+            #chmod o+rx certs  
             apt-get install docker-ce-cli
       - run: 
           name: run docker build

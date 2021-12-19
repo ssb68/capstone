@@ -60,18 +60,18 @@ jobs:
   createEKScluster: 
     description: create AWS EKS stack using eksctl
     parameters:
-      skip:
+      create:
         description: boolean to determine whether this is the initial cluster build
-        default: true
+        default: false
         type: boolean
     machine: true
     steps:
       - when:
-          condition: <<parameters.skip>>
+          condition: <<parameters.create>>
           steps:
             - run: echo "build eks cluster"
       - unless:
-          condition: <<parameters.skip>>
+          condition: <<parameters.create>>
           steps:
             - run: echo "DO NOT build eks cluster"
    
@@ -80,4 +80,4 @@ workflows:
     jobs:
       #- build 
       - createEKScluster: 
-          skip: true
+          create: false

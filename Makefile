@@ -48,7 +48,6 @@ push-image:
 
 deploy-app:
     # using the current context and default namespace
-	
 	kubectl apply -f ./deployment.yaml
 
 deploy-service:

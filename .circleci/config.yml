@@ -111,7 +111,6 @@ jobs:
                   --region us-east-1 \
                   --version 1.19 \
                   --nodegroup-name capstone-workers \
-                  --node-ami ami-0ed9277fb7eb570c9 \
                   --node-type t2.micro \
                   --nodes 2 \
                   --nodes-min 1 \
@@ -160,6 +159,7 @@ workflows:
       - build 
       - createEKScluster: 
           create: true
+          requires: [build]
       - deploy-application:
           requires: [build,createEKScluster]
         

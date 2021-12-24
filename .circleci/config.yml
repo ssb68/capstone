@@ -115,17 +115,17 @@ jobs:
                   --nodes 2 \
                   --nodes-min 1 \
                   --nodes-max 3
-      - unless:
-          condition: <<parameters.create>>
-          steps:
-            - run: echo "skipping the eks cluster creation"
-  deploy-application: 
-    description: deploy kubernmets artefacts
-    docker:
-      - image: cimg/python:3.10.1
-    working_directory: ~/repo
-    steps:
-      - checkout
+#      - unless:
+#          condition: <<parameters.create>>
+#          steps:
+#            - run: echo "skipping the eks cluster creation"
+#  deploy-application: 
+#    description: deploy kubernmets artefacts
+#    docker:
+#      - image: cimg/python:3.10.1
+#    working_directory: ~/repo
+#    steps:
+#      - checkout
       - run:
           name: Install the kubectl tool
           command: |
@@ -161,9 +161,9 @@ workflows:
   default:
     jobs:
      # - build 
-     # - createEKScluster: 
-     #     create: true
+      - createEKScluster: 
+          create: false
      #     requires: [build]
-      - deploy-application
+     # - deploy-application
      #     requires: [build,createEKScluster]
         

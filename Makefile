@@ -42,16 +42,16 @@ build-image:
 
 push-image:
 	# push image to docker.io
-    docker tag ${PROJECT} ${USER}/${PROJECT}:${IMAGE_TAG}
-    echo ${PASS} | docker login -u ${USER} --password-stdin
-    docker push ${USER}/${PROJECT}:${IMAGE_TAG}
+	docker tag ${PROJECT} ${USER}/${PROJECT}:${IMAGE_TAG}
+	echo ${PASS} | docker login -u ${USER} --password-stdin
+	docker push ${USER}/${PROJECT}:${IMAGE_TAG}
 
 deploy-app:
-    # using the current context and default namespace
+	# using the current context and default namespace
 	kubectl apply -f ./deployment.yaml
 
 deploy-service:
-    # using the current context and default namespace
+	# using the current context and default namespace
 	kubectl apply -f ./service-yaml
 
 all: install lint test

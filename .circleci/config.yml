@@ -178,12 +178,10 @@ jobs:
             echo ${KUBECONFIG}
             cd $HOME/.kube
             ls -ltr
-
             kubectl get nodes -o wide
-           	kubectl apply -f ./deployment.yaml
+            kubectl apply -f ./deployment.yaml
             kubectl apply -f ./service-yaml
-
-            #make deploy-app
+      #make deploy-app
       #- run:
       #    name: apply the app service yaml
       #    command: |

@@ -180,12 +180,15 @@ jobs:
             ls -ltr
 
             kubectl get nodes -o wide
-            make deploy-app
-      - run:
-          name: apply the app service yaml
-          command: |
-            cd ./yaml
-            make deploy-service
+           	kubectl apply -f ./deployment.yaml
+            kubectl apply -f ./service-yaml
+
+            #make deploy-app
+      #- run:
+      #    name: apply the app service yaml
+      #    command: |
+      #      cd ./yaml
+      #      make deploy-service
 
 workflows:
   default:

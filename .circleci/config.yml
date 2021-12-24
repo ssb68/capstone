@@ -142,13 +142,32 @@ jobs:
             sudo apt-get install -y sed
             TAG=0.1.64 #$CIRCLE_BUILD_NUM
             # replace the image TAG in the deployment yaml
-            sed -i 's/TAG/"${TAG}"/g' ./deployment.yaml
+            sed -i 's/TAG/'${TAG}'/g' ./deployment.yaml
             cat ./deployment.yaml
       - run:
           name: apply the app deployment yaml
           command: |
             cd ./yaml
             ls -ltr
+            echo "check if eksctl is installed"
+            if which eksctl > /dev/null; then
+              echo "eksctl is already installed"
+              eksctl version
+            else
+              echo "eksctl needs to be installed"
+              mkdir -p eksctl_download
+              curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" \
+              | tar xz -C eksctl_download
+              chmod +x eksctl_download/eksctl
+              SUDO=""
+              if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
+                SUDO="sudo"
+              fi
+              $SUDO mv eksctl_download/eksctl /usr/local/bin/
+              rmdir eksctl_download
+              eksctl version                     
+            fi
+            eksctl utils write-kubeconfig --cluster=${CLUSTER_STACK_NAME}
             kubectl get nodes -o wide
             make deploy-app
       - run:

@@ -63,7 +63,6 @@ jobs:
   
   createEKScluster: 
     description: create AWS EKS stack using eksctl
-    #executor: aws-eks/python3
     docker:
       - image: cimg/python:3.10.1
     parameters:
@@ -71,8 +70,9 @@ jobs:
         description: boolean to determine whether this is the initial cluster build
         default: false
         type: boolean
-    #machine: true
+    working_directory: ~/repo
     steps:
+      - checkout
       - when:
           condition: <<parameters.create>>
           steps:
@@ -103,27 +103,63 @@ jobs:
                   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
                   sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
                   kubectl version --client 
-            #- run: 
-            #    name: Create cluster with eksctl tool
-            #    command: |
-            #      eksctl create cluster \
-            #      --name $CLUSTER_STACK_NAME \
-            #      --region us-east-1
-            #      --version 1.19 \
-            #      --nodegroup-name capstone-workers \
-            #      --node-ami auto \
-            #      --node-type t2.micro \
-            #      --nodes 2 \
-            #      --nodes-min 1 \
-            #      --nodes-max 3
+            - run: 
+                name: Create cluster with eksctl tool
+                command: |
+                  eksctl create cluster \
+                  --name $CLUSTER_STACK_NAME \
+                  --region us-east-1 \
+                  --version 1.19 \
+                  --nodegroup-name capstone-workers \
+                  --node-ami auto \
+                  --node-type t2.micro \
+                  --nodes 2 \
+                  --nodes-min 1 \
+                  --nodes-max 3
       - unless:
           condition: <<parameters.create>>
           steps:
             - run: echo "skipping the eks cluster creation"
-   
+  deploy-application: 
+    description: deploy kubernmets artefacts
+    docker:
+      - image: cimg/python:3.10.1
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Install the kubectl tool
+          command: |
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+            kubectl version --client    
+      - run: 
+          name: install stream editor
+          command: |
+            pwd
+            cd ./yaml
+            sudo apt-get install -y sed
+            TAG=0.1.$CIRCLE_BUILD_NUM
+            # replace the image TAG in the deployment yaml
+            sed -i 's/TAG/${TAG}/g' ./deployment.yaml
+      - run:
+          name: apply the app deployment yaml
+          command: |
+            pwd
+            cd ./yaml
+            make deploy-app
+      - run:
+          name: apply the app service yaml
+          command: |
+            cd ./yaml
+            make deploy-service
+
 workflows:
   default:
     jobs:
-      #- build 
+      - build 
       - createEKScluster: 
           create: true
+      - deploy-application:
+          requires: [build,createEKScluster]
+        

@@ -163,6 +163,6 @@ workflows:
      # - createEKScluster: 
      #     create: true
      #     requires: [build]
-      - deploy-application:
+      - deploy-application
      #     requires: [build,createEKScluster]
         

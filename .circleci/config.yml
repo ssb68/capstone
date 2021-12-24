@@ -168,6 +168,10 @@ jobs:
               eksctl version                     
             fi
             eksctl utils write-kubeconfig --cluster=${CLUSTER_STACK_NAME}
+            echo ${KUBECONFIG}
+            cd $HOME/.kube
+            ls -ltr
+
             kubectl get nodes -o wide
             make deploy-app
       - run:

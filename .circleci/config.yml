@@ -140,7 +140,7 @@ jobs:
             pwd
             ls -ltr
             sudo apt-get install -y sed
-            TAG=0.1.64 #$CIRCLE_BUILD_NUM
+            TAG=0.1.$CIRCLE_BUILD_NUM
             # replace the image TAG in the deployment yaml
             sed -i 's/TAG/'${TAG}'/g' ./deployment.yaml
             cat ./deployment.yaml
@@ -192,10 +192,10 @@ jobs:
 workflows:
   default:
     jobs:
-     # - build 
+      - build 
       - createEKScluster: 
           create: false
-     #     requires: [build]
+          requires: [build]
      # - deploy-application
      #     requires: [build,createEKScluster]
         

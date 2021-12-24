@@ -142,13 +142,14 @@ jobs:
             sudo apt-get install -y sed
             TAG=0.1.64 #$CIRCLE_BUILD_NUM
             # replace the image TAG in the deployment yaml
-            sed -i 's/TAG/${TAG}/g' ./deployment.yaml
+            sed -i 's/TAG/"${TAG}"/g' ./deployment.yaml
             cat ./deployment.yaml
       - run:
           name: apply the app deployment yaml
           command: |
             cd ./yaml
             ls -ltr
+            kubectl get nodes -o wide
             make deploy-app
       - run:
           name: apply the app service yaml

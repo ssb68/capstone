@@ -51,5 +51,11 @@ On initial deployment of the application image into the kubernetes cluster it wi
     ENV HELLO_VERSION=hello-v1.html
 
 ### Sample Output
-V1
-![Link](https://github.com/ssb68/capstone/blob/main/sample-output/V1-Screenshot.png)
+Version 1
+```
+https://github.com/ssb68/capstone/blob/master/sample-output/V1-Screenshot.png
+```
+Version 2
+```
+https://github.com/ssb68/capstone/blob/master/sample-output/V2-Screenshot.png
+```

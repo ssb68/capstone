@@ -52,10 +52,10 @@ On initial deployment of the application image into the kubernetes cluster it wi
 
 ### Sample Output
 Version 1
-```
-![Link](https://github.com/ssb68/capstone/blob/master/sample-output/V1-Screenshot.png)
-```
+
+![image](https://github.com/ssb68/capstone/blob/master/sample-output/V1-Screenshot.png)
+
 Version 2
-```
-![Link](https://github.com/ssb68/capstone/blob/master/sample-output/V2-Screenshot.png)
-```
+
+![image](https://github.com/ssb68/capstone/blob/master/sample-output/V2-Screenshot.png)
+

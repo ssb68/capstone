@@ -1,41 +1,48 @@
-[![CircleCI](https://circleci.com/gh/ssb68/project-ml-microservice-kubernetes-/tree/main.svg?style=svg)](https://circleci.com/gh/ssb68/project-ml-microservice-kubernetes-/tree/main)
+[![CircleCI](https://circleci.com/gh/ssb68/capstone/tree/master.svg?style=svg)](https://circleci.com/gh/ssb68/capstone/tree/master)
 
 ## Project Overview
 
-In this project, you will apply the skills you have acquired in this course to operationalize a Machine Learning Microservice API. 
+This is a Udacity DevOps "capstone" project.  It represents the skills acquired through the completion of this course. 
+The actual application deployed by this repository of code is a simple python application that displays a web page (which includes version info, a hello message and a coloured background.)
 
-You are given a pre-trained, `sklearn` model that has been trained to predict housing prices in Boston according to several features, such as average rooms in a home and data about highway access, teacher-to-pupil ratios, and so on. You can read more about the data, which was initially taken from Kaggle, on [the data source site](https://www.kaggle.com/c/boston-housing). This project tests your ability to operationalize a Python flask app—in a provided file, `app.py`—that serves out predictions (inference) about housing prices through API calls. This project could be extended to any pre-trained machine learning model, such as those for image recognition and data labeling.
+### Technoloy stacks
 
-### Project Tasks
+CirleCI - for Continous build and deployment (including AWS EKS build)
+AWS CloudFormation utilised via eksctl
+eksctl - for simplyfing the Kubernetes cluster config in AWS
+Kubernetes (EKS)
+kubectl for managing the kubernetes deployments from command line
+Docker Hub (built image repo used in this project)
+GitHub
 
-Your project goal is to operationalize this working, machine learning microservice using [kubernetes](https://kubernetes.io/), which is an open-source system for automating the management of containerized applications. In this project you will:
-* Test your project code using linting
-* Complete a Dockerfile to containerize this application
-* Deploy your containerized application using Docker and make a prediction
-* Improve the log statements in the source code for this application
-* Configure Kubernetes and create a Kubernetes cluster
-* Deploy a container using Kubernetes and make a prediction
-* Upload a complete Github repo with CircleCI to indicate that your code has been tested
+### How to configure
+In order to run this project in CircleCI
 
-You can find a detailed [project rubric, here](https://review.udacity.com/#!/rubrics/2576/view).
+Clone the GitHub repo to your own.
+Configure your CirceCI project with your Git credentials
+Create the following required Project ENV variables with appropriate values:
+  AWS_ACCESS_KEY_ID
+  AWS_DEFAULT_REGION
+  AWS_SECRET_ACCESS_KEY
+  CAPSTONE_PROJECT
+  CLUSTER_STACK_NAME
+  DOCKER_PASS
+  DOCKER_USER
 
-**The final implementation of the project will showcase your abilities to operationalize production microservices.**
+### How to use
+The Circle CI workflow will not only build the project, but will also deploy the the full EKS cluster in AWS.  Typically you would only do this once.  In order to control when the EKS cluster is build you MUST set the following workflow flag 
+- createEKScluster: 
+          # ONLY set to true for first deployment 
+          create: true
 
----
+For subsequent builds set the flag as follows
+- createEKScluster: 
+          # ONLY set to true for first deployment 
+          create: false
 
-## Setup the Environment
+On initial deployment of the application image into the kubernetes cluster it will deploy "V1" aka version 1 of the application.  In order to test the rolling update (no down time) capability of the application all you need to do is alter a variable in the Dockerfile as per below exert. 
 
-*Based on Python 3.7.10.
+    ## Step 5:
+    # just change this value for to v2 for testing rolling updates
+    ENV HELLO_VERSION=hello-v1.html
 
-### Running `app.py`
-
-1. Standalone:  `python app.py`
-2. Run in Docker:  `./run_docker.sh`
-3. Run in Kubernetes:  `./run_kubernetes.sh`
-
-### Kubernetes Steps
-
-* Setup and Configure Docker locally
-* Setup and Configure Kubernetes locally
-* Create Flask app in Container
-* Run via kubectl

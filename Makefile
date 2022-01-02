@@ -46,12 +46,4 @@ push-image:
 	echo ${PASS} | docker login -u ${USER} --password-stdin
 	docker push ${USER}/${PROJECT}:${IMAGE_TAG}
 
-deploy-app:
-	# using the current context and default namespace
-	kubectl apply -f ./deployment.yaml
-
-deploy-service:
-	# using the current context and default namespace
-	kubectl apply -f ./service-yaml
-
 all: install lint test

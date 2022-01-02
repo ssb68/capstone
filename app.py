@@ -12,7 +12,7 @@ print("Running with version: %s" % hello_version)
 
 @app.route('/hello/')
 @app.route('/hello/<name>')
-df hello(name=None):
+def hello(name=None):
     return render_template(hello_version, name=name)
 
 if __name__ == "__main__":

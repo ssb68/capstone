@@ -3,7 +3,7 @@
 ## Project Overview
 
 This is a Udacity DevOps "capstone" project.  It represents the skills acquired through the completion of this course. 
-The actual application deployed by this repository of code is a simple python application that displays a web page (which includes version info, a hello message and a coloured background.)
+The actual application deployed by this repository of code is a simple python application that displays a web page (which includes version info, a hello message and a coloured background).  Note this project uses kubernetes rolling deployments updates rather than blue / green deployment.  
 
 ### Technoloy stacks
 
@@ -47,7 +47,7 @@ For subsequent builds set the flag as follows
 On initial deployment of the application image into the kubernetes cluster it will deploy "V1" aka version 1 of the application.  In order to test the rolling update (no down time) capability of the application all you need to do is alter a variable in the Dockerfile as per below exert. 
 
     ## Step 5:
-    # just change this value for to v2 for testing rolling updates
+    # just change this value to -v2 from -v1 for testing rolling updates
     ENV HELLO_VERSION=hello-v1.html
 
 ### Sample Output

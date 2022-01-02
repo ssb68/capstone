@@ -21,6 +21,7 @@ In order to run this project in CircleCI
 Clone the GitHub repo to your own.
 Configure your CirceCI project with your Git credentials
 Create the following required Project ENV variables with appropriate values:
+```
   AWS_ACCESS_KEY_ID
   AWS_DEFAULT_REGION
   AWS_SECRET_ACCESS_KEY
@@ -28,9 +29,11 @@ Create the following required Project ENV variables with appropriate values:
   CLUSTER_STACK_NAME
   DOCKER_PASS
   DOCKER_USER
+```
 
 ### How to use
 The Circle CI workflow will not only build the project, but will also deploy the the full EKS cluster in AWS.  Typically you would only do this once.  In order to control when the EKS cluster is build you MUST set the following workflow flag 
+```
 - createEKScluster: 
           # ONLY set to true for first deployment 
           create: true
@@ -39,6 +42,7 @@ For subsequent builds set the flag as follows
 - createEKScluster: 
           # ONLY set to true for first deployment 
           create: false
+```
 
 On initial deployment of the application image into the kubernetes cluster it will deploy "V1" aka version 1 of the application.  In order to test the rolling update (no down time) capability of the application all you need to do is alter a variable in the Dockerfile as per below exert. 
 
@@ -48,4 +52,4 @@ On initial deployment of the application image into the kubernetes cluster it wi
 
 ### Sample Output
 V1
-![Link](https://github.com/brayssa/capstone/sample-output/V1-Screenshot.png)
+![Link](https://github.com/ssb68/capstone/blob/main/sample-output/V1-Screenshot.png)

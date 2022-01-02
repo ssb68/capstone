@@ -15,12 +15,6 @@ jobs:
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: true
-      # Download and cache dependencies
-      #- restore_cache:
-      #    keys:
-      #    - v1-dependencies-{{ checksum "requirements.txt" }}
-      #    # fallback to using the latest cache if no exact match is found
-      #    - v1-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -55,8 +49,15 @@ jobs:
           command: |
             . capstone/bin/activate
             TAG=0.1.$CIRCLE_BUILD_NUM
+            pwd
+            echo $TAG > ~/TAG.txt
+            cat ~/TAG.txt
             make push-image PROJECT=$CAPSTONE_PROJECT IMAGE_TAG=$TAG USER=$DOCKER_USER PASS=$DOCKER_PASS
-  
+      - persist_to_workspace:
+          root: ~/repo
+          paths: 
+            - TAG.txt 
+
   createEKScluster: 
     description: create AWS EKS stack using eksctl
     docker:
@@ -125,21 +126,26 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/repo
       - run:
           name: Install the kubectl tool
           command: |
             curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
             sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
             kubectl version --client    
-      # install SED so I can replace the image TAG value in the deploymnet yaml with yjos build's circle CI TAG
+      # install SED so I can replace the image TAG value in the deployment yaml with jos build's circle CI TAG
       - run: 
           name: install stream editor
           command: |
+            sudo apt-get install -y sed
+            pwd
+            ls -ltr
+            TAG=`cat TAG.txt`
+            echo $TAG
             cd ./yaml
             pwd
             ls -ltr
-            sudo apt-get install -y sed
-            TAG=0.1.64 #80  #$CIRCLE_BUILD_NUM
             # replace the image TAG in the deployment yaml
             sed -i 's/TAG/'${TAG}'/g' ./deployment.yaml
             cat ./deployment.yaml

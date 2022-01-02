@@ -1,1 +1,9 @@
+GitHub
 https://github.com/ssb68/capstone
+
+App LB endpoint URL
+http://a063c290f4e914e3e91a62c4bf1a5d5d-1508728312.us-east-1.elb.amazonaws.com/hello/<name here>
+
+i.e 
+
+http://a063c290f4e914e3e91a62c4bf1a5d5d-1508728312.us-east-1.elb.amazonaws.com/hello/Steve

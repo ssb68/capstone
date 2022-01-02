@@ -188,5 +188,5 @@ workflows:
           # ONLY set to true for first deployment 
           create: true
           requires: [build]
-      - deploy-application
+      - deploy-application:
           requires: [build,createEKScluster]

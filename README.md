@@ -46,3 +46,6 @@ On initial deployment of the application image into the kubernetes cluster it wi
     # just change this value for to v2 for testing rolling updates
     ENV HELLO_VERSION=hello-v1.html
 
+### Sample Output
+V1
+![Link](https://github.com/brayssa/capstone/sample-output/V1-Screenshot.png)

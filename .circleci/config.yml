@@ -50,7 +50,7 @@ jobs:
             . capstone/bin/activate
             TAG=0.1.$CIRCLE_BUILD_NUM
             pwd
-            echo $TAG > ~/TAG.txt
+            echo $TAG > TAG.txt
             cat ~/TAG.txt
             make push-image PROJECT=$CAPSTONE_PROJECT IMAGE_TAG=$TAG USER=$DOCKER_USER PASS=$DOCKER_PASS
       - persist_to_workspace:
